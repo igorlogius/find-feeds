@@ -1,0 +1,38 @@
+{
+  "author": "igorlogius",
+  "icons": {
+    "256": "icon.png"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "js": ["content-script.js"],
+      "matches": ["https://*/*", "http://*/*"]
+    }
+  ],
+  "homepage_url": "https://github.com/igorlogius/list-feeds",
+  "manifest_version": 2,
+  "name": "List Feeds",
+  "browser_action": {
+    "default_area": "navbar",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "menus",
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+  "page_action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "options_ui": {
+    "open_in_tab": true,
+    "page": "options.html"
+  },
+  "version": "1.0.0"
+}

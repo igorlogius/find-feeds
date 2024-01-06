@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8" />
+  <title>List-Feed Options</title>
+</head>
+<body style="background: lightgray">
+  <form id="mainForm" accept-charset="utf-8">
+    <p></p>
+    <input type="submit" value="Save changes" />
+    <input
+      id="impbtn_wrapper"
+      type="button"
+      name="impbtn"
+      value="Import Rules"
+    />
+    <input
+      id="impbtn"
+      type="file"
+      name="impbtn"
+      value=""
+      style="display: none"
+    />
+    <input id="expbtn" type="button" name="impbtn" value="Export Rules" />
+    <input id="pageActionOn" type="checkbox" value="" /> check to enable Page
+    Action
+    <button id="about" title="About">&#8505; About</button>
+    <p></p>
+    <table id="mainTable" border="1" style="width: 100%">
+      <thead>
+        <th style="width: 0px">Enabled</th>
+        <th style="width: 70%">JS Code</th>
+        <th>URL RegEx</th>
+        <th style="width: 0px">Action</th>
+      </thead>
+      <tbody id="mainTableBody" />
+    </table>
+  </form>
+  <script src="options.js"></script>
+</body>

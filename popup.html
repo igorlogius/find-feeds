@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head>
+  <title>List-Feeds</title>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  <style>
+    body {
+      background: lightgray;
+      font-family: monospace;
+    }
+    table#feedlist tr td {
+      border: 1px solid black;
+      padding: 10px;
+    }
+    table#feedlist tr td:nth-child(4) {
+      cursor: pointer;
+    }
+    table#feedlist tr td:nth-child(3) {
+      text-align: center;
+    }
+    tr:hover {
+      background-color: lightblue;
+    }
+    td {
+      line-break: anywhere;
+    }
+  </style>
+</head>
+<body>
+  <fieldset>
+    <div style="width: 100%; text-align: right; border-bottom: 1px solid">
+      <span id="msg"></span>
+    </div>
+    <table id="feedlist">
+      <th style="width: 3em">#</th>
+      <th>url</th>
+      <th style="width: 5em">Typ</th>
+      <th>🔍</th>
+    </table>
+  </fieldset>
+  <script src="popup.js"></script>
+</body>
