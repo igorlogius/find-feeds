@@ -12,7 +12,8 @@
       "matches": ["https://*/*", "http://*/*"]
     }
   ],
-  "homepage_url": "https://github.com/igorlogius/list-feeds",
+  "homepage_url": "https://github.com/igorlogius",
+  "description": "Detects and lists feeds (rss,atom,json) of a page",
   "manifest_version": 2,
   "name": "List Feeds",
   "browser_action": {
