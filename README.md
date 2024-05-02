@@ -4,6 +4,10 @@ On many sites the feed capabilites are still available but sometimes badly
 maintained, so that it can be hard to access or find these. This Addon tries to
 make it easy to find all available feeds a site has to offer.
 
+<b>Short Demo Video:</b>
+
+https://github.com/igorlogius/list-feeds/assets/67047467/883e8b37-b41e-4e60-b56c-2934cccc3a9e
+
 <b>Usage: (Basic) </b>
 <ol>
   <li>
