@@ -4,6 +4,8 @@ On many sites the feed capabilites are still available but sometimes badly
 maintained, so that it can be hard to access or find these. This Addon tries to
 make it easy to find all available feeds a site has to offer.
 
+[![](https://raw.githubusercontent.com/igorlogius/igorlogius/main/geFxAddon.png)](https://addons.mozilla.org/firefox/addon/list-feeds/)
+
 ### [Click here to report a bug, make a suggestion or ask a question](https://github.com/igorlogius/igorlogius/issues/new/choose)
 
 <b>Short Demo Video:</b>
