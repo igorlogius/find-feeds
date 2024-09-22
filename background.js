@@ -95,7 +95,7 @@ async function onMessage(data, sender) {
               await browser.tabs.executeScript(sender.tab.id, {
                 code: el.code,
               })
-            )[0]
+            )[0],
           );
         } catch (err) {
           console.error(`failed to execute script: ${err}`, el.regex);
@@ -173,13 +173,13 @@ browser.webRequest.onHeadersReceived.addListener(
     urls: ["<all_urls>"],
     types: ["main_frame"],
   },
-  ["blocking", "responseHeaders"]
+  ["blocking", "responseHeaders"],
 );
 
 async function handleInstalled(details) {
   if (details.reason === "install") {
     const resp = await fetch(
-      browser.runtime.getURL("custom-feed-detectors.json")
+      browser.runtime.getURL("custom-feed-detectors.json"),
     );
     const json = await resp.json();
     browser.storage.local.set({ selectors: json });
@@ -212,13 +212,16 @@ async function onStorageChanged() {
   browser.tabs.onRemoved.addListener(onTabRemoved);
   browser.tabs.onUpdated.addListener(onTabUpdated, { properties: ["url"] });
 
-  setInterval(() => {
-    const now = Date.now();
-    resource_cache.forEach((item, key, map) => {
-      if (now - item.ts > 1000 * 60 * 60) {
-        //console.debug('deleted', key , ' from cache');
-        map.delete(key);
-      }
-    });
-  }, 1000 * 60 * 10);
+  setInterval(
+    () => {
+      const now = Date.now();
+      resource_cache.forEach((item, key, map) => {
+        if (now - item.ts > 1000 * 60 * 60) {
+          //console.debug('deleted', key , ' from cache');
+          map.delete(key);
+        }
+      });
+    },
+    1000 * 60 * 10,
+  );
 })();
