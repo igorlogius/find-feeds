@@ -1,7 +1,7 @@
 /* global browser */
 
 const tabId2Feeds = new Map();
-let pageActionOn = false;
+//let pageActionOn = false;
 let regexs2code = [];
 
 const xml_substring_matchers = ["rdf", "rss", "atom", "xml"];
@@ -61,6 +61,7 @@ async function getFromStorage(id, fallback) {
   })();
 }
 
+/*
 function onWebRequestHeadersReceived(details) {
   const new_headers = [];
   for (let header of details.responseHeaders) {
@@ -80,6 +81,7 @@ function onWebRequestHeadersReceived(details) {
     responseHeaders: new_headers,
   };
 }
+*/
 
 async function onMessage(data, sender) {
   let tabId;
@@ -125,17 +127,17 @@ async function onMessage(data, sender) {
     });
     tabId2Feeds.set(tabId, data);
     if (data.length > 0) {
-      browser.browserAction.enable(tabId);
-      if (pageActionOn) {
-        browser.pageAction.show(tabId);
-      }
-      browser.browserAction.setBadgeText({ text: "" + data.length, tabId });
+      //browser.browserAction.enable(tabId);
+      //if (pageActionOn) {
+      browser.pageAction.show(tabId);
+      //}
+      //browser.browserAction.setBadgeText({ text: "" + data.length, tabId });
     } else {
-      browser.browserAction.disable(tabId);
-      if (pageActionOn) {
-        browser.pageAction.hide(tabId);
-      }
-      browser.browserAction.setBadgeText({ text: "", tabId });
+      //browser.browserAction.disable(tabId);
+      //if (pageActionOn) {
+      browser.pageAction.hide(tabId);
+      //}
+      //browser.browserAction.setBadgeText({ text: "", tabId });
     }
   } else {
     // popup
@@ -155,6 +157,7 @@ function onTabRemoved(tabId) {
   }
 }
 
+/*
 browser.menus.create({
   title: "Preferences",
   contexts: ["browser_action"],
@@ -162,11 +165,13 @@ browser.menus.create({
     browser.runtime.openOptionsPage();
   },
 });
+*/
 
 // default state for browserAction icon is off
-browser.browserAction.disable();
+//browser.browserAction.disable();
 
 // register listeners
+/*
 browser.webRequest.onHeadersReceived.addListener(
   onWebRequestHeadersReceived,
   {
@@ -175,6 +180,7 @@ browser.webRequest.onHeadersReceived.addListener(
   },
   ["blocking", "responseHeaders"],
 );
+*/
 
 async function handleInstalled(details) {
   if (details.reason === "install") {
@@ -188,12 +194,12 @@ async function handleInstalled(details) {
 
 function onTabUpdated(tabId /*, changeInfo, tabInfo*/) {
   tabId2Feeds.set(tabId, []);
-  browser.browserAction.disable(tabId);
-  browser.browserAction.setBadgeText({ tabId, text: "" });
+  //browser.browserAction.disable(tabId);
+  //browser.browserAction.setBadgeText({ tabId, text: "" });
 }
 
 async function onStorageChanged() {
-  pageActionOn = await getFromStorage("pageActionOn", false);
+  //pageActionOn = await getFromStorage("pageActionOn", false);
   const selectors = await getFromStorage("selectors", []);
   regexs2code = [];
   for (let selector of selectors) {
