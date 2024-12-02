@@ -34,6 +34,7 @@ function onChange(evt) {
   browser.storage.local.set(obj).catch(console.error);
 }
 
+/*
 ["pageActionOn"].map((id) => {
   browser.storage.local
     .get(id)
@@ -56,6 +57,7 @@ function onChange(evt) {
   let el = document.getElementById(id);
   el.addEventListener("input", onChange);
 });
+*/
 
 function deleteRow(rowTr) {
   var mainTableBody = document.getElementById("mainTableBody");

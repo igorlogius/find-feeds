@@ -51,11 +51,11 @@ async function init() {
       var td3 = tr.insertCell();
       td3.appendChild(abbrType);
 
-      /*var td4 = tr.insertCell();
+      var td4 = tr.insertCell();
       td4.textContent = "🔍";
       td4.title = obj.url;
       td4.href = obj.url;
-      td4.addEventListener("click", openFeedInTab, false);*/
+      td4.addEventListener("click", openFeedInTab, false);
 
       idCounter++;
     });

@@ -61,7 +61,7 @@ async function getFromStorage(id, fallback) {
   })();
 }
 
-/*
+/**/
 function onWebRequestHeadersReceived(details) {
   const new_headers = [];
   for (let header of details.responseHeaders) {
@@ -81,7 +81,7 @@ function onWebRequestHeadersReceived(details) {
     responseHeaders: new_headers,
   };
 }
-*/
+/**/
 
 async function onMessage(data, sender) {
   let tabId;
@@ -171,7 +171,6 @@ browser.menus.create({
 //browser.browserAction.disable();
 
 // register listeners
-/*
 browser.webRequest.onHeadersReceived.addListener(
   onWebRequestHeadersReceived,
   {
@@ -180,7 +179,6 @@ browser.webRequest.onHeadersReceived.addListener(
   },
   ["blocking", "responseHeaders"],
 );
-*/
 
 async function handleInstalled(details) {
   if (details.reason === "install") {

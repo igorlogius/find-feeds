@@ -6,6 +6,9 @@
   "background": {
     "scripts": ["background.js"]
   },
+  "commands": {
+    "_execute_page_action": {}
+  },
   "content_scripts": [
     {
       "js": ["content-script.js"],
@@ -16,7 +19,7 @@
   "description": "Auto detect feeds (rss,atom,json,...) on websites",
   "manifest_version": 2,
   "name": "List Feeds",
-  "permissions": ["storage", "<all_urls>"],
+  "permissions": ["webRequest", "webRequestBlocking", "storage", "<all_urls>"],
   "page_action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
@@ -25,5 +28,5 @@
     "open_in_tab": true,
     "page": "options.html"
   },
-  "version": "1.1.0"
+  "version": "1.1.2"
 }
