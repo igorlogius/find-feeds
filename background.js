@@ -63,23 +63,33 @@ async function getFromStorage(id, fallback) {
 
 /**/
 function onWebRequestHeadersReceived(details) {
-  const new_headers = [];
-  for (let header of details.responseHeaders) {
-    const hkey = header.name.toLowerCase();
-    let hval = header.value.toLowerCase();
+  if (
+    typeof details.originUrl === "string" &&
+    details.originUrl === browser.runtime.getURL("/") &&
+    details.statusCode === 200
+  ) {
+    console.debug(details);
 
-    if (hkey === "content-type") {
-      if (/.*\/(red|rss|atom|xml)/.test(hval)) {
-        hval = "text/xml";
-        new_headers.push({ name: hkey, value: hval });
-        continue;
+    const new_headers = [];
+    for (let header of details.responseHeaders) {
+      const hkey = header.name.toLowerCase();
+      let hval = header.value.toLowerCase();
+
+      if (hkey === "content-type") {
+        if (/.*\/(red|rss|atom|xml)/.test(hval)) {
+          hval = "text/xml";
+          new_headers.push({ name: hkey, value: hval });
+          console.debug("modified HEADER for ", details);
+          continue;
+        }
       }
+      new_headers.push(header);
     }
-    new_headers.push(header);
+
+    return {
+      responseHeaders: new_headers,
+    };
   }
-  return {
-    responseHeaders: new_headers,
-  };
 }
 /**/
 
