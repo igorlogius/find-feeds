@@ -32,6 +32,20 @@ async function init() {
       const a1 = document.createElement("a");
       const abbr = document.createElement("abbr");
       const abbrType = document.createElement("abbr");
+      const cpybtn = document.createElement("button");
+        cpybtn.textContent = 'Copy';
+
+      cpybtn.addEventListener(
+        "click",
+        async (evt) => {
+          await navigator.clipboard.writeText(obj.url);
+          evt.target.setAttribute('disabled', '');
+          setTimeout( () => {
+            evt.target.removeAttribute('disabled');
+        }, 700);
+        },
+        false,
+      );
 
       abbr.setAttribute("title", obj.url);
       abbrType.setAttribute("title", obj.type);
@@ -56,6 +70,9 @@ async function init() {
       td4.title = obj.url;
       td4.href = obj.url;
       td4.addEventListener("click", openFeedInTab, false);
+
+      var td5 = tr.insertCell();
+      td5.appendChild(cpybtn);
 
       idCounter++;
     });
