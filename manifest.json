@@ -1,32 +1,26 @@
 {
   "author": "igorlogius",
   "icons": {
-    "256": "icon.png"
+    "266": "icon.png"
   },
   "background": {
     "scripts": ["background.js"]
   },
-  "commands": {
-    "_execute_page_action": {}
-  },
-  "content_scripts": [
-    {
-      "js": ["content-script.js"],
-      "matches": ["<all_urls>"]
-    }
-  ],
-  "homepage_url": "https://github.com/igorlogius/list-feeds",
-  "description": "Auto detect feeds (rss,atom,json,...) on websites",
-  "manifest_version": 2,
-  "name": "List Feeds",
-  "permissions": ["webRequest", "webRequestBlocking", "storage", "<all_urls>", "clipboardWrite"],
-  "page_action": {
+  "browser_action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
   },
+  "commands": {
+    "_execute_browser_action": {}
+  },
+  "description": "Detect feeds (rss,atom,json,...) on any websites, with the click on a button",
+  "homepage_url": "https://github.com/igorlogius/find-feeds",
+  "manifest_version": 2,
+  "name": "Find Feeds",
   "options_ui": {
     "open_in_tab": true,
     "page": "options.html"
   },
-  "version": "1.1.4"
+  "permissions": ["storage", "<all_urls>"],
+  "version": "1.2.5"
 }

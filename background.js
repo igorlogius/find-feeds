@@ -1,7 +1,6 @@
 /* global browser */
 
-const tabId2Feeds = new Map();
-//let pageActionOn = false;
+//const tabId2Feeds = new Map();
 let regexs2code = [];
 
 const xml_substring_matchers = ["rdf", "rss", "atom", "xml"];
@@ -40,6 +39,7 @@ async function checkResource(url) {
           }
         }
       } catch (e) {
+        //console.warn(e);
         // noop
       }
     }
@@ -61,134 +61,52 @@ async function getFromStorage(id, fallback) {
   })();
 }
 
-/**/
-function onWebRequestHeadersReceived(details) {
-  if (
-    typeof details.originUrl === "string" &&
-    details.originUrl === browser.runtime.getURL("/") &&
-    details.statusCode === 200
-  ) {
-    console.debug(details);
-
-    const new_headers = [];
-    for (let header of details.responseHeaders) {
-      const hkey = header.name.toLowerCase();
-      let hval = header.value.toLowerCase();
-
-      if (hkey === "content-type") {
-        if (/.*\/(red|rss|atom|xml)/.test(hval)) {
-          hval = "text/xml";
-          new_headers.push({ name: hkey, value: hval });
-          console.debug("modified HEADER for ", details);
-          continue;
-        }
+async function onMessage(/*data, sender*/) {
+  let atab = (
+    await browser.tabs.query({ currentWindow: true, active: true })
+  ).map((t) => t)[0];
+  let urls2check = [];
+  for (const el of regexs2code) {
+    if (RegExp(el.regex).test(atab.url)) {
+      try {
+        urls2check = urls2check.concat(
+          (
+            await browser.tabs.executeScript(atab.id, {
+              code: el.code,
+            })
+          )[0],
+        );
+      } catch (err) {
+        console.error(`failed to execute script: ${err}`, el.regex);
       }
-      new_headers.push(header);
     }
-
-    return {
-      responseHeaders: new_headers,
-    };
   }
-}
-/**/
+  urls2check = [...new Set([...urls2check])];
 
-async function onMessage(data, sender) {
-  let tabId;
-  if (sender.tab) {
-    // data update from tab/content-script
-    tabId = sender.tab.id;
-    let urls2check = [];
-    for (const el of regexs2code) {
-      if (RegExp(el.regex).test(sender.url)) {
-        try {
-          urls2check = urls2check.concat(
-            (
-              await browser.tabs.executeScript(sender.tab.id, {
-                code: el.code,
-              })
-            )[0],
-          );
-        } catch (err) {
-          console.error(`failed to execute script: ${err}`, el.regex);
-        }
+  let data = [];
+  let tmp;
+  for (const u of urls2check) {
+    if (resource_cache.has(u)) {
+      tmp = resource_cache.get(u);
+      if (tmp !== false) {
+        data.push(tmp);
       }
-    }
-    urls2check = [...new Set([...data, ...urls2check])];
-
-    data = [];
-    let tmp;
-    for (const u of urls2check) {
-      if (resource_cache.has(u)) {
-        tmp = resource_cache.get(u);
-        if (tmp !== false) {
-          data.push(tmp);
-        }
-      } else {
-        tmp = await checkResource(u);
-        resource_cache.set(u, tmp);
-        if (tmp !== false) {
-          data.push(tmp);
-        }
-      }
-    }
-    data.sort((a, b) => {
-      return a.url.localeCompare(b.url);
-    });
-    tabId2Feeds.set(tabId, data);
-    if (data.length > 0) {
-      //browser.browserAction.enable(tabId);
-      //if (pageActionOn) {
-      browser.pageAction.show(tabId);
-      //}
-      //browser.browserAction.setBadgeText({ text: "" + data.length, tabId });
     } else {
-      //browser.browserAction.disable(tabId);
-      //if (pageActionOn) {
-      browser.pageAction.hide(tabId);
-      //}
-      //browser.browserAction.setBadgeText({ text: "", tabId });
-    }
-  } else {
-    // popup
-    tabId = (
-      await browser.tabs.query({ currentWindow: true, active: true })
-    ).map((t) => t.id)[0];
-    if (tabId2Feeds.has(tabId)) {
-      data = tabId2Feeds.get(tabId);
-      return data;
+      tmp = await checkResource(u);
+      resource_cache.set(u, tmp);
+      if (tmp !== false) {
+        data.push(tmp);
+      }
     }
   }
+  data.sort((a, b) => {
+    return a.url.localeCompare(b.url);
+  });
+  return data;
 }
-
-function onTabRemoved(tabId) {
-  if (tabId2Feeds.has(tabId)) {
-    tabId2Feeds.delete(tabId);
-  }
-}
-
-/*
-browser.menus.create({
-  title: "Preferences",
-  contexts: ["browser_action"],
-  onclick: function () {
-    browser.runtime.openOptionsPage();
-  },
-});
-*/
 
 // default state for browserAction icon is off
-//browser.browserAction.disable();
-
-// register listeners
-browser.webRequest.onHeadersReceived.addListener(
-  onWebRequestHeadersReceived,
-  {
-    urls: ["<all_urls>"],
-    types: ["main_frame"],
-  },
-  ["blocking", "responseHeaders"],
-);
+browser.browserAction.disable();
 
 async function handleInstalled(details) {
   if (details.reason === "install") {
@@ -200,14 +118,15 @@ async function handleInstalled(details) {
   }
 }
 
-function onTabUpdated(tabId /*, changeInfo, tabInfo*/) {
-  tabId2Feeds.set(tabId, []);
-  //browser.browserAction.disable(tabId);
-  //browser.browserAction.setBadgeText({ tabId, text: "" });
+function onTabUpdated(tabId, changeInfo, tabInfo) {
+  if (changeInfo.status === "complete") {
+    browser.browserAction.enable(tabId);
+  } else {
+    browser.browserAction.disable(tabId);
+  }
 }
 
 async function onStorageChanged() {
-  //pageActionOn = await getFromStorage("pageActionOn", false);
   const selectors = await getFromStorage("selectors", []);
   regexs2code = [];
   for (let selector of selectors) {
@@ -219,23 +138,8 @@ async function onStorageChanged() {
 
 (async () => {
   onStorageChanged();
-
   browser.runtime.onInstalled.addListener(handleInstalled);
   browser.runtime.onMessage.addListener(onMessage);
   browser.storage.onChanged.addListener(onStorageChanged);
-  browser.tabs.onRemoved.addListener(onTabRemoved);
-  browser.tabs.onUpdated.addListener(onTabUpdated, { properties: ["url"] });
-
-  setInterval(
-    () => {
-      const now = Date.now();
-      resource_cache.forEach((item, key, map) => {
-        if (now - item.ts > 1000 * 60 * 60) {
-          //console.debug('deleted', key , ' from cache');
-          map.delete(key);
-        }
-      });
-    },
-    1000 * 60 * 10,
-  );
+  browser.tabs.onUpdated.addListener(onTabUpdated, { properties: ["status"] });
 })();
