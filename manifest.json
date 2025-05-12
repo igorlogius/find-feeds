@@ -8,7 +8,7 @@
   },
   "browser_action": {
     "default_popup": "popup.html",
-    "default_icon": "icon.png"
+    "default_area": "navbar"
   },
   "commands": {
     "_execute_browser_action": {}
@@ -22,5 +22,5 @@
     "page": "options.html"
   },
   "permissions": ["storage", "<all_urls>"],
-  "version": "1.2.5"
+  "version": "1.2.6"
 }
