@@ -1,18 +1,13 @@
 <!doctype html>
 <head>
   <meta charset="utf-8" />
-  <title>List-Feed Options</title>
+  <title>Feed URL Builders</title>
 </head>
 <body style="background: lightgray">
   <form id="mainForm" accept-charset="utf-8">
     <p></p>
     <input type="submit" value="Save changes" />
-    <input
-      id="impbtn_wrapper"
-      type="button"
-      name="impbtn"
-      value="Import Rules"
-    />
+    <input id="impbtn_wrapper" type="button" name="impbtn" value="Import" />
     <input
       id="impbtn"
       type="file"
@@ -20,15 +15,14 @@
       value=""
       style="display: none"
     />
-    <input id="expbtn" type="button" name="impbtn" value="Export Rules" />
-    <button id="about" title="About">&#8505; About</button>
+    <input id="expbtn" type="button" name="impbtn" value="Export" />
     <p></p>
     <table id="mainTable" border="1" style="width: 100%">
       <thead>
         <th style="width: 0px">Enabled</th>
-        <th style="width: 70%">JS Code</th>
+        <th style="width: 70%">JS-Code</th>
         <th>URL RegEx</th>
-        <th style="width: 0px">Action</th>
+        <th style="width: 0px"></th>
       </thead>
       <tbody id="mainTableBody" />
     </table>

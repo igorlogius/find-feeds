@@ -1,12 +1,5 @@
 /* global browser */
 
-document.getElementById("about").addEventListener("click", function () {
-  browser.tabs.create({
-    url: "https://addons.mozilla.org/firefox/addon/list-feeds",
-    active: true,
-  });
-});
-
 function onChange(evt) {
   let id = evt.target.id;
   let el = document.getElementById(id);
@@ -33,31 +26,6 @@ function onChange(evt) {
   obj[id] = value;
   browser.storage.local.set(obj).catch(console.error);
 }
-
-/*
-["pageActionOn"].map((id) => {
-  browser.storage.local
-    .get(id)
-    .then((obj) => {
-      let el = document.getElementById(id);
-      let val = obj[id];
-
-      if (typeof val !== "undefined") {
-        if (el.type === "checkbox") {
-          el.checked = val;
-        } else {
-          el.value = val;
-        }
-      } else {
-        el.value = 0;
-      }
-    })
-    .catch(console.error);
-
-  let el = document.getElementById(id);
-  el.addEventListener("input", onChange);
-});
-*/
 
 function deleteRow(rowTr) {
   var mainTableBody = document.getElementById("mainTableBody");
@@ -110,7 +78,7 @@ function createTableRow(feed) {
 
   var button;
   if (feed.action === "save") {
-    button = createButton("Save", "saveButton", function () {}, true);
+    button = createButton("Add", "saveButton", function () {}, true);
   } else {
     button = createButton(
       "Delete",

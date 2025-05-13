@@ -1,7 +1,7 @@
 [
   {
     "activ": true,
-    "code": "(() => {\n  let feeds = [];\n  let channelId, channelRss;\n  const arrScripts = document.getElementsByTagName('script');\n  for (let i = 0; i < arrScripts.length; i++) {\n    if (arrScripts[i].textContent.indexOf('externalId') != -1) {\n         channelId = arrScripts[i].textContent.match(/\\\"externalId\\\"\\s*\\:\\s*\\\"(.*?)\\\"/)[1];\n         channelRss = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + channelId;\n         feeds.push(channelRss);\n         break;\n     }\n  }\n  return feeds;\n})();",
+    "code": "(async () => {\n  let feeds = [];\n  const resp = await fetch(document.location.href);\n  const text = await resp.text();\n  const regex = /https:\\/\\/www\\.youtube\\.com\\/feeds\\/videos\\.xml\\?channel_id=[A-Za-z0-9_-]*/\n  const found = text.match(regex)\n  if(found.length > 0){\n     return found;\n  }\n  return feeds;\n})();",
     "url_regex": "^https:\\/\\/www\\.youtube\\.com\\/.*"
   },
   {
