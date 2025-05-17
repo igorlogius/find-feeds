@@ -6,7 +6,7 @@
   },
   {
     "activ": true,
-    "code": "(async () => {\n  let feeds = [];\n  const resp = await fetch(document.location.href);\n  const text = await resp.text();\n  const regex = /https:\\/\\/www\\.youtube\\.com\\/feeds\\/videos\\.xml\\?channel_id=[A-Za-z0-9_-]*/\n  const found = text.match(regex)\n  if(found.length > 0){\n     return found;\n  }\n  return feeds;\n})();",
+    "code": "(async () => {\n\n  /* find channel feed */ \n  let feeds = [];\n  const regex = /https:\\/\\/www\\.youtube\\.com\\/feeds\\/videos\\.xml\\?channel_id=[A-Za-z0-9_-]*/\n\n  const url = new URL(document.location.href);\n  const params = url.searchParams;\n\n  let resp = await fetch(url.href);\n  let text = await resp.text();\n\n  let found = text.match(regex)\n  if(found !== null && found.length > 0){\n     feeds.push(found[0]);\n  }\n\n  /* find playlist feed */\n\n  const videoId = params.get(\"v\");\n  if(videoId !== null){\n    const channelURL = document.querySelector('.ytd-channel-name a.yt-simple-endpoint').href;\n    if(channelURL !== null) {\n     resp = await fetch(channelURL);\n     text = await resp.text();\n     found = text.match(regex)\n     if(found != null && found.length > 0){\n       feeds.push(found[0]);\n     }\n    }\n  }\n\n  const playlistId = params.get(\"list\");\n  if(playlistId !== null){\n      feeds.push(\"https://www.youtube.com/feeds/videos.xml?playlist_id=\" + playlistId);\n  }\n\n  return feeds;\n})();",
     "url_regex": "^https:\\/\\/www\\.youtube\\.com\\/.*"
   },
   {
