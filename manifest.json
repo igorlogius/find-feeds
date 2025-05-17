@@ -13,7 +13,7 @@
   "commands": {
     "_execute_browser_action": {}
   },
-  "description": "Detect feeds (rss,atom,json,...) on any websites, with the click on a button",
+  "description": "Find RSS, ATOM or JSON feeds on a website with the click on a button",
   "homepage_url": "https://github.com/igorlogius/find-feeds",
   "manifest_version": 2,
   "name": "Find Feeds",
@@ -22,5 +22,5 @@
     "page": "options.html"
   },
   "permissions": ["storage", "<all_urls>"],
-  "version": "1.2.7"
+  "version": "1.2.8"
 }
