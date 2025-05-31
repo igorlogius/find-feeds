@@ -82,10 +82,19 @@ async function onMessage(/*data, sender*/) {
     }
   }
   urls2check = [...new Set([...urls2check])];
+  browser.runtime.sendMessage({
+    target: "popup",
+    nburls2check: urls2check.length,
+  });
 
   let data = [];
   let tmp;
+  let i = 1;
   for (const u of urls2check) {
+    await browser.runtime.sendMessage({
+      target: "popup",
+      urls2checkProgress: i++,
+    });
     if (resource_cache.has(u)) {
       tmp = resource_cache.get(u);
       if (tmp !== false) {

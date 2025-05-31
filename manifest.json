@@ -22,5 +22,5 @@
     "page": "options.html"
   },
   "permissions": ["storage", "<all_urls>"],
-  "version": "1.2.10"
+  "version": "1.2.11"
 }

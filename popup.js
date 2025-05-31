@@ -10,6 +10,19 @@ function openFeedInTab(evt) {
 }
 
 async function init() {
+  // update progress
+  await browser.runtime.onMessage.addListener((data, sender) => {
+    if (data.nburls2check) {
+      document
+        .getElementById("urls2checkProgress")
+        .setAttribute("max", parseInt(data.nburls2check));
+    }
+    if (data.urls2checkProgress) {
+      document
+        .getElementById("urls2checkProgress")
+        .setAttribute("value", data.urls2checkProgress);
+    }
+  });
   const tbl = document.getElementById("feedlist");
   const msg = document.getElementById("msg");
 
