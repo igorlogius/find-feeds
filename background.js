@@ -61,10 +61,18 @@ async function getFromStorage(id, fallback) {
   })();
 }
 
-async function onMessage(/*data, sender*/) {
+async function onMessage(indata, sender) {
+  console.debug(indata);
+  /*
   let atab = (
     await browser.tabs.query({ currentWindow: true, active: true })
   ).map((t) => t)[0];
+    */
+
+  const atab = await browser.tabs.get(parseInt(indata.tabId));
+
+  console.debug(atab);
+
   let urls2check = [];
   for (const el of regexs2code) {
     if (RegExp(el.regex).test(atab.url)) {
@@ -82,6 +90,7 @@ async function onMessage(/*data, sender*/) {
     }
   }
   urls2check = [...new Set([...urls2check])];
+  console.debug(urls2check);
   browser.runtime.sendMessage({
     target: "popup",
     nburls2check: urls2check.length,
@@ -147,8 +156,16 @@ async function onStorageChanged() {
 
 (async () => {
   onStorageChanged();
-  browser.runtime.onInstalled.addListener(handleInstalled);
   browser.runtime.onMessage.addListener(onMessage);
   browser.storage.onChanged.addListener(onStorageChanged);
   browser.tabs.onUpdated.addListener(onTabUpdated, { properties: ["status"] });
+  browser.browserAction.onClicked.addListener((tab) => {
+    browser.tabs.create({
+      url: "popup.html?tabId=" + tab.id,
+      index: tab.index + 1,
+      active: true,
+    });
+  });
 })();
+
+browser.runtime.onInstalled.addListener(handleInstalled);

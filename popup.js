@@ -28,7 +28,12 @@ async function init() {
 
   try {
     //
-    let objs = await browser.runtime.sendMessage({});
+
+    const popupsearchparams = new URL(document.location.href).searchParams;
+
+    let objs = await browser.runtime.sendMessage({
+      tabId: popupsearchparams.get("tabId"),
+    });
     //
     if (objs.length < 1) {
       msg.textContent = "No feeds found";

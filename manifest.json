@@ -7,7 +7,6 @@
     "scripts": ["background.js"]
   },
   "browser_action": {
-    "default_popup": "popup.html",
     "default_area": "navbar"
   },
   "commands": {
@@ -21,6 +20,6 @@
     "open_in_tab": true,
     "page": "options.html"
   },
-  "permissions": ["storage", "<all_urls>"],
-  "version": "1.2.11"
+  "permissions": ["storage", "tabs", "<all_urls>"],
+  "version": "1.3.11"
 }
