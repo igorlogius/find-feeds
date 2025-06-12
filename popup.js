@@ -9,6 +9,10 @@ function openFeedInTab(evt) {
   });
 }
 
+function decodeQueryParam(p) {
+  return decodeURIComponent(p.replace(/\+/g, " "));
+}
+
 async function init() {
   // update progress
   await browser.runtime.onMessage.addListener((data, sender) => {
@@ -33,6 +37,7 @@ async function init() {
 
     let objs = await browser.runtime.sendMessage({
       tabId: popupsearchparams.get("tabId"),
+      url: decodeQueryParam(popupsearchparams.get("url")),
     });
     //
     if (objs.length < 1) {

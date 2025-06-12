@@ -62,24 +62,14 @@ async function getFromStorage(id, fallback) {
 }
 
 async function onMessage(indata, sender) {
-  console.debug(indata);
-  /*
-  let atab = (
-    await browser.tabs.query({ currentWindow: true, active: true })
-  ).map((t) => t)[0];
-    */
-
-  const atab = await browser.tabs.get(parseInt(indata.tabId));
-
-  console.debug(atab);
-
+  //const atab = await browser.tabs.get(parseInt(indata.tabId));
   let urls2check = [];
   for (const el of regexs2code) {
-    if (RegExp(el.regex).test(atab.url)) {
+    if (RegExp(el.regex).test(indata.url)) {
       try {
         urls2check = urls2check.concat(
           (
-            await browser.tabs.executeScript(atab.id, {
+            await browser.tabs.executeScript(parseInt(indata.tabId), {
               code: el.code,
             })
           )[0],
@@ -90,7 +80,6 @@ async function onMessage(indata, sender) {
     }
   }
   urls2check = [...new Set([...urls2check])];
-  console.debug(urls2check);
   browser.runtime.sendMessage({
     target: "popup",
     nburls2check: urls2check.length,
@@ -161,7 +150,7 @@ async function onStorageChanged() {
   browser.tabs.onUpdated.addListener(onTabUpdated, { properties: ["status"] });
   browser.browserAction.onClicked.addListener((tab) => {
     browser.tabs.create({
-      url: "popup.html?tabId=" + tab.id,
+      url: "popup.html?tabId=" + tab.id + "&url=" + encodeURIComponent(tab.url),
       index: tab.index + 1,
       active: true,
     });
