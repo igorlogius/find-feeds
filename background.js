@@ -1,6 +1,5 @@
 /* global browser */
 
-//const tabId2Feeds = new Map();
 let regexs2code = [];
 
 const xml_substring_matchers = ["rdf", "rss", "atom", "xml"];
@@ -14,7 +13,11 @@ async function checkResource(url) {
     url = url.trim();
     if (url !== "") {
       try {
-        const res = await fetch(url, { method: "HEAD", mode: "no-cors" });
+        const res = await fetch(url, {
+          method: "HEAD",
+          mode: "no-cors",
+          signal: AbortSignal.timeout(5000),
+        }); // if we dont get a reply within 10 seconds ... lets just ignore/skip it for now
         if (res.ok) {
           // 2xx
           //  The name is case-insensitive.
@@ -25,14 +28,12 @@ async function checkResource(url) {
             if (xml_substring_matchers.some((e) => ctype.includes("/" + e))) {
               return {
                 url: url,
-                ts: Date.now(),
                 type: "xml",
               };
             }
             if (json_substring_matchers.some((e) => ctype.includes("/" + e))) {
               return {
                 url: url,
-                ts: Date.now(),
                 type: "json",
               };
             }
@@ -62,7 +63,6 @@ async function getFromStorage(id, fallback) {
 }
 
 async function onMessage(indata, sender) {
-  //const atab = await browser.tabs.get(parseInt(indata.tabId));
   let urls2check = [];
   for (const el of regexs2code) {
     if (RegExp(el.regex).test(indata.url)) {
@@ -80,36 +80,35 @@ async function onMessage(indata, sender) {
     }
   }
   urls2check = [...new Set([...urls2check])];
+
+  // update progressbar max length
   browser.runtime.sendMessage({
-    target: "popup",
+    target: "find.html",
     nburls2check: urls2check.length,
   });
 
-  let data = [];
+  //let data = [];
   let tmp;
   let i = 1;
+  let found = 0;
   for (const u of urls2check) {
-    await browser.runtime.sendMessage({
-      target: "popup",
-      urls2checkProgress: i++,
-    });
     if (resource_cache.has(u)) {
       tmp = resource_cache.get(u);
-      if (tmp !== false) {
-        data.push(tmp);
-      }
     } else {
       tmp = await checkResource(u);
       resource_cache.set(u, tmp);
-      if (tmp !== false) {
-        data.push(tmp);
-      }
     }
+    if (tmp !== false) {
+      found++;
+    }
+    // update progressbar + transmit element or false
+    await browser.runtime.sendMessage({
+      target: "find.html",
+      urls2checkProgress: i++,
+      feed: tmp,
+    });
   }
-  data.sort((a, b) => {
-    return a.url.localeCompare(b.url);
-  });
-  return data;
+  return found;
 }
 
 // default state for browserAction icon is off
@@ -145,16 +144,22 @@ async function onStorageChanged() {
 
 (async () => {
   onStorageChanged();
+  browser.runtime.onInstalled.addListener(handleInstalled);
   browser.runtime.onMessage.addListener(onMessage);
   browser.storage.onChanged.addListener(onStorageChanged);
   browser.tabs.onUpdated.addListener(onTabUpdated, { properties: ["status"] });
   browser.browserAction.onClicked.addListener((tab) => {
     browser.tabs.create({
-      url: "popup.html?tabId=" + tab.id + "&url=" + encodeURIComponent(tab.url),
+      url: "find.html?tabId=" + tab.id + "&url=" + encodeURIComponent(tab.url),
       index: tab.index + 1,
       active: true,
     });
   });
+  browser.menus.create({
+    title: "Configure Feed Detectors",
+    contexts: ["browser_action"],
+    onclick: () => {
+      browser.runtime.openOptionsPage();
+    },
+  });
 })();
-
-browser.runtime.onInstalled.addListener(handleInstalled);

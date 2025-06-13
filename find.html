@@ -1,17 +1,10 @@
 <!doctype html>
 <head>
-  <title>List-Feeds</title>
+  <title>Find Feeds</title>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
   <style>
-    /*
-    :root {
-      color-scheme: light dark;
-    }
-    */
     body {
       font-family: monospace;
-      /*color: black;*/
-      /*background-color: light-dark(gainsboro, darkgray);*/
       background-color: lightgray;
     }
     table#feedlist {
@@ -36,10 +29,10 @@
 <body>
   <fieldset>
     <div style="width: 100%; text-align: right">
-      <b><span id="msg">Looking for feeds, please wait</span></b>
+      <b><span id="msg">Looking for feed-like URLs, please wait</span></b>
     </div>
     <progress id="urls2checkProgress" value="0" max="1"></progress>
     <table id="feedlist"></table>
   </fieldset>
-  <script src="popup.js"></script>
+  <script src="find.js"></script>
 </body>
